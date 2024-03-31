@@ -1,0 +1,164 @@
+@startuml
+
+class DbHelper {
+  -_db: Database?
+  -DB_Name: String
+  -Table_User: String
+  -Table_Item: String
+  -Table_LostItem: String
+  -Table_FoundItem: String
+  +db: Future<Database?>
+  +initDb(): initDb
+  +_onCreate(Database, int): void
+  +saveUserData(UserModel): Future<int>
+  +getLoginUser(String, String): Future<UserModel?>
+  +getUserByEmail(String): Future<UserModel?>
+  +saveItem(Item): Future<int>
+  +saveLostItem(int, String): Future<int>
+  +getItemById(int): Future<Item?>
+  +deleteItem(int): Future<int>
+  +deleteLostItem(int): Future<int>
+  +getLostItemList(String): Future<List<Item>>
+  +saveFoundItem(int, String, String): Future<int>
+  +saveReceiveItem(int, String, String): Future<int>
+  +deleteFoundItem(int): Future<int>
+  +deleteItemByType(int, String): Future<void>
+  +getItemsByColor(String, String): Future<List<Item>>
+  +getItemsByCategory(String, String): Future<List<Item>>
+  +getItemsByLocation(String, String): Future<List<Item>>
+  +getItemsByCategoryAndType(String, String): Future<List<Item>>
+  +getAllFoundItems(): Future<List<Item>>
+  +getAllLostItems(): Future<List<Item>>
+  +getAllReceivedItems(): Future<List<Item>>
+  +deleteItemByEmailAndAttributes(String, Item): Future<int>
+  +deleteItem2(Item): Future<int>
+  +updateItemTypeToReceive(Item, String, String): Future<void>
+  +getEmailByItemIdFromLostTable(int): Future<String?>
+  +getItemIdByAttributes(Item): Future<int?>
+}
+
+class UserModel {
+  -user_name: String?
+  -email: String?
+  -password: String?
+  +toMap(): Map<String, dynamic>
+  +fromMap(Map<String, dynamic>): UserModel
+  +getEmail(): String?
+  +getUsername(): String?
+}
+
+class Item {
+  -C_Name: String?
+  -C_Category: String?
+  -C_Color: String?
+  -C_Location: String?
+  -C_Description: String?
+  -C_ImagePath: String?
+  -C_ItemType: String?
+  -name: String?
+  -category: String?
+  -color: String?
+  -location: String?
+  -description: String?
+  -imagePath: String?
+  -itemType: String?
+  +toMap(): Map<String, dynamic>
+  +fromMap(Map<String, dynamic>): Item
+  +updateItemType(String): void
+}
+
+class EmailSender {
+  -username: String
+  -password: String
+  +sendEmail(String, String, String, String): Future<void>
+}
+
+class ItemPoster {
+  +post(Item): Future<void>
+}
+
+class User {
+  -userdetail: UserModel
+  -itemList: List<Item>?
+  +post(Item): Future<void>
+  +matchAndNotify(Item): Future<void>
+  +delete_Item(int): Future<void>
+  +deleteItem(Item): Future<void>
+  +getUserDetail(): UserModel
+  +sendMatchingItemEmail(String, Item, Item, double, String): Future<void>
+}
+class ItemManager {
+  -verificationCode: String
+  +compareVerificationCode(String): Future<bool>
+  +post(Item): Future<void>
+  +matchAndNotify(Item): Future<void>
+  +sendMatchingItemEmail(String, Item, Item, double, String): Future<void>
+  +saveMarkAsReceived(Item, String, String): Future<void>
+}
+
+
+class APIService {
+  +getSimilarityScore(String, String): Future<String>
+  +getDetected(String): Future<String>
+}
+
+class CompositeSearchStrategy {
+  -strategies: List<SearchStrategy>
+  -itemType: ItemType
+  +filterItems(): Future<List<Item>>
+  +filterItemsFromList(List<Item>): Future<List<Item>>
+}
+
+class LocationFilterStrategy {
+  -location: String
+  -itemType: String
+  -itemsToFilter: List<Item>?
+  +filterItems(): Future<List<Item>>
+  +filterItemsFromList(List<Item>): Future<List<Item>>
+}
+
+class ColorFilterStrategy {
+  -color: String
+  -itemType: String
+  -itemsToFilter: List<Item>?
+  +filterItems(): Future<List<Item>>
+  +filterItemsFromList(List<Item>): Future<List<Item>>
+}
+
+class CategoryFilterStrategy {
+  -category: String
+  -itemType: String
+  -itemsToFilter: List<Item>?
+  +filterItems(): Future<List<Item>>
+  +filterItemsFromList(List<Item>): Future<List<Item>>
+}
+
+class SearchStrategy {
+  +filterItems(): Future<List<Item>>
+  +filterItemsFromList(List<Item>): Future<List<Item>>
+}
+
+ItemPoster --> Item
+DbHelper --> Item
+User *--right- UserModel
+User --> Item
+User --> EmailSender
+User --|> ItemPoster
+User --> DbHelper
+ItemManager --> DbHelper
+ItemManager --> EmailSender
+ItemManager --|> ItemPoster
+CompositeSearchStrategy --|> SearchStrategy
+LocationFilterStrategy --|>  SearchStrategy
+ColorFilterStrategy--|> SearchStrategy
+CategoryFilterStrategy --|>  SearchStrategy
+
+CompositeSearchStrategy --> DbHelper
+LocationFilterStrategy -->  DbHelper
+ColorFilterStrategy--> DbHelper
+CategoryFilterStrategy -->  DbHelper
+
+User --> APIService
+ItemManager --> APIService
+
+@enduml

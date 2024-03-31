@@ -1,0 +1,7 @@
+calculator
+glasses
+key
+powerbank
+pen
+charger
+
