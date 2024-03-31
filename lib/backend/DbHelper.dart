@@ -477,4 +477,51 @@ class DbHelper {
 
     return null;
   }
+
+  Future<Map<String, String>?> getNameAndEmailFromFoundItem(Item item) async {
+    var dbClient = await db;
+
+    // Search for the item in the item_table
+    List<Map<String, dynamic>> res = await dbClient!.query(
+      Table_Item,
+      where: '$C_Name = ? AND '
+          '$C_Category = ? AND '
+          '$C_Color = ? AND '
+          '$C_Location = ? AND '
+          '$C_Description = ? AND '
+          '$C_ImagePath = ? AND '
+          '$C_ItemType = ?',
+      whereArgs: [
+        item.name,
+        item.category,
+        item.color,
+        item.location,
+        item.description,
+        item.imagePath,
+        item.itemType,
+      ],
+    );
+
+    if (res.isNotEmpty) {
+      // If the item exists in the item_table, retrieve its ID
+      int itemId = res.first['item_id'] as int;
+
+      // Search for corresponding entries in the foundItem_table using the item ID
+      List<Map<String, dynamic>> foundItems = await dbClient.query(
+        Table_FoundItem,
+        where: 'item_id = ?',
+        whereArgs: [itemId],
+      );
+
+      if (foundItems.isNotEmpty) {
+        // Extract name and email associated with the found item
+        String name = foundItems.first['name'];
+        String email = foundItems.first['email'];
+
+        return {'name': name, 'email': email};
+      }
+    }
+
+    return null; // Return null if the item is not found in the item_table or if no corresponding entry is found in the foundItem_table
+  }
 }
