@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lost_and_found/backend/ItemManager.dart';
 import '../backend/DbHelper.dart'; // Import your DbHelper class
 import '../backend/Item.dart'; // Import your Item class
 import '../ui_helper/ItemTile.dart'; // Import your ItemTile widget
@@ -49,12 +50,70 @@ class _ReceiveItemPageState extends State<ReceiveItemPage> {
             return ListView.builder(
               itemCount: snapshot.data!.length,
               itemBuilder: (context, index) {
-                return ItemTile(item: snapshot.data![index]);
+                return GestureDetector(
+                  onTap: () =>
+                      _showReceivePersonDialog(context, snapshot.data![index]),
+                  child: ItemTile(item: snapshot.data![index]),
+                );
               },
             );
           }
         },
       ),
     );
+  }
+
+  Future<void> _showReceivePersonDialog(BuildContext context, Item item) async {
+    try {
+      ItemManager itemManager = ItemManager();
+      Map<String, String>? receivePerson =
+          await itemManager.getReceivePerson(item);
+
+      if (receivePerson != null) {
+        String receivePersonName = receivePerson['name'] ?? 'Unknown';
+        String receivePersonEmail = receivePerson['email'] ?? 'Unknown';
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text('Received by'),
+              content: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('Name: $receivePersonName'),
+                  Text('Email: $receivePersonEmail'),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text('Close'),
+                ),
+              ],
+            );
+          },
+        );
+      } else {
+        // Handle case when receive person is not found
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text('Error'),
+              content: Text('Receive person not found.'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text('Close'),
+                ),
+              ],
+            );
+          },
+        );
+      }
+    } catch (e) {
+      print('Error showing receive person dialog: $e');
+    }
   }
 }
