@@ -7,10 +7,10 @@ import 'Item.dart';
 import '../backend/DbHelper.dart';
 
 class ItemManager implements ItemPoster {
-  String verificationCode = 'admin1234';
+  String _verificationCode = 'admin1234';
 
   Future<bool> compareVerificationCode(String inputCode) async {
-    return inputCode == verificationCode;
+    return inputCode == _verificationCode;
   }
 
   Future<void> post(Item newItem) async {
@@ -62,7 +62,7 @@ class ItemManager implements ItemPoster {
       Item foundItem, double similarity, String foundItemImagePath) async {
     try {
       final emailSender = EmailSender(
-          username: 'gkasita.sst@gmail.com', password: 'aqru szme dkha fpkc');
+          username: 'theintnandarsu246@gmail.com', password: 'fjpk rgpp nlgq hkct');
 
       String subject = 'Matching Item Found! Is this yours?';
       String body = 'Dear User,\n\n'
@@ -91,11 +91,5 @@ class ItemManager implements ItemPoster {
       print("Error saving: $e");
     }
   }
-
-  Future<Map<String, String>?> getReceivePerson(Item item) async {
-    DbHelper dbHelper = DbHelper();
-    Map<String, String>? result =
-        await dbHelper.getNameAndEmailFromFoundItem(item);
-    return result;
-  }
 }
+
