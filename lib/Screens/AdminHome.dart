@@ -89,62 +89,60 @@ class _AdminHomeState extends State<AdminHome> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'My App',
-      home: Scaffold(
-        appBar: null,
-        body: Stack(
-          children: [
-            Container(
-              color: Colors.white,
-              width: double.infinity,
-              height: double.infinity,
-            ),
-            Positioned(
-              top: MediaQuery.of(context).size.height * 0.1,
-              right: MediaQuery.of(context).size.width * 0.1,
-              child: _buildContainer('Found Item List', () {
-                _navigateToFoundItems(context);
-              }),
-            ),
-            Positioned(
-              top: MediaQuery.of(context).size.height * 0.35,
-              right: MediaQuery.of(context).size.width * 0.1,
-              child: _buildContainer('Receive Item List', () {
-                _navigateToReceiveItems(context);
-              }),
-            ),
-            Positioned(
-              top: MediaQuery.of(context).size.height * 0.6,
-              right: MediaQuery.of(context).size.width * 0.1,
-              child: _buildContainer('Lost Item List', () {
-                _navigateToLostItems(context);
-              }),
-            ),
-          ],
-        ),
-        bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: Color.fromARGB(255, 237, 237, 239),
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.logout),
-              label: 'Log out',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.upload),
-              label: 'Upload',
-            ),
-          ],
-          selectedItemColor: Colors.blue,
-          onTap: (int index) {
-            if (index == 0) {
-              _logout(context);
-            } else if (index == 1) {
-              _upload(context);
-            }
-          },
-        ),
+    return Scaffold(
+      appBar: null,
+      body: Stack(
+        children: [
+          Container(
+            color: Colors.white,
+            width: double.infinity,
+            height: double.infinity,
+          ),
+          Positioned(
+            top: MediaQuery.of(context).size.height * 0.1,
+            right: MediaQuery.of(context).size.width * 0.1,
+            child: _buildContainer('Found Item List', () {
+              _navigateToFoundItems(context);
+            }),
+          ),
+          Positioned(
+            top: MediaQuery.of(context).size.height * 0.35,
+            right: MediaQuery.of(context).size.width * 0.1,
+            child: _buildContainer('Receive Item List', () {
+              _navigateToReceiveItems(context);
+            }),
+          ),
+          Positioned(
+            top: MediaQuery.of(context).size.height * 0.6,
+            right: MediaQuery.of(context).size.width * 0.1,
+            child: _buildContainer('Lost Item List', () {
+              _navigateToLostItems(context);
+            }),
+          ),
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Color.fromARGB(255, 237, 237, 239),
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.logout),
+            label: 'Log out',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.upload),
+            label: 'Upload',
+          ),
+        ],
+        selectedItemColor: Colors.blue,
+        onTap: (int index) {
+          if (index == 0) {
+            _logout(context);
+          } else if (index == 1) {
+            _upload(context);
+          }
+        },
       ),
     );
   }
 }
+
