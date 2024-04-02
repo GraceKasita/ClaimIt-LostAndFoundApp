@@ -193,7 +193,7 @@ class _LostItemPageState extends State<LostItemPage> {
       Map<String, String>? owner = await itemManager.getLostItemOwner(item);
 
       if (owner != null) {
-        String ownerName = owner['user_name'] ?? 'Unknown';
+        String ownerName = owner['username'] ?? 'Unknown';
         String ownerEmail = owner['email'] ?? 'Unknown';
         showDialog(
           context: context,
