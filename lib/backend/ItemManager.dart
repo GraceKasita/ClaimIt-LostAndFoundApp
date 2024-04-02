@@ -91,5 +91,10 @@ class ItemManager implements ItemPoster {
       print("Error saving: $e");
     }
   }
+    Future<Map<String, String>?> getLostItemOwner(Item item) async {
+    DbHelper dbHelper = DbHelper();
+    Map<String, String>? result = await dbHelper.getLostItemOwnerDetails(item);
+    return result;
+  }
 }
 
