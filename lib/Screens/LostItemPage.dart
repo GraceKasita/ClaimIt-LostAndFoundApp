@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
 import '../backend/Item.dart';
+import '../backend/ItemManager.dart';
 import '../backend/Search/CategoryFilterStrategy.dart';
 import '../backend/Search/ColorFilterStrategy.dart';
 import '../backend/Search/CompositeSearchStrategy.dart';
 import '../backend/Search/LocationFilterStrategy.dart';
 import '../backend/Search/SearchStrategy.dart';
-import '../ui_helper/ItemTile.dart'; // Import your Item class
+import '../ui_helper/ItemTile.dart'; // Import your ItemTile widget
 
 class LostItemPage extends StatefulWidget {
   const LostItemPage({Key? key}) : super(key: key);
@@ -42,7 +43,7 @@ class _LostItemPageState extends State<LostItemPage> {
     'Black',
     'White',
     'Gray',
-    'Other'
+    'Others'
   ];
   final List<String> locations = [
     'none',
@@ -139,8 +140,10 @@ class _LostItemPageState extends State<LostItemPage> {
             child: ListView.builder(
               itemCount: filteredItems.length,
               itemBuilder: (context, index) {
-                return ItemTile(
-                  item: filteredItems[index],
+                return GestureDetector(
+                  onTap: () =>
+                      _showLostItemOwner(context, filteredItems[index]),
+                  child: ItemTile(item: filteredItems[index]),
                 );
               },
             ),
@@ -183,4 +186,57 @@ class _LostItemPageState extends State<LostItemPage> {
       filteredItems = filtered;
     });
   }
+
+  Future<void> _showLostItemOwner(BuildContext context, Item item) async {
+    try {
+      ItemManager itemManager = ItemManager();
+      Map<String, String>? owner = await itemManager.getLostItemOwner(item);
+
+      if (owner != null) {
+        String ownerName = owner['user_name'] ?? 'Unknown';
+        String ownerEmail = owner['email'] ?? 'Unknown';
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text('Lost Item Owner'),
+              content: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('Name: $ownerName'),
+                  Text('Email: $ownerEmail'),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text('Close'),
+                ),
+              ],
+            );
+          },
+        );
+      } else {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text('Error'),
+              content: Text('Owner information not found.'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text('Close'),
+                ),
+              ],
+            );
+          },
+        );
+      }
+    } catch (e) {
+      print('Error showing lost item owner dialog: $e');
+    }
+  }
 }
+
