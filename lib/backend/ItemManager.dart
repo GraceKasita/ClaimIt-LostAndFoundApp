@@ -49,8 +49,10 @@ class ItemManager implements ItemPoster {
           int? itemId = await dbHelper.getItemIdByAttributes(lostItem);
           String? email = await dbHelper.getEmailByItemIdFromLostTable(itemId!);
 
+          String fsimilarity ='${(similarity * 100).toStringAsFixed(2)}%';
+
           await sendMatchingItemEmail(
-              email!, newItem, lostItem, similarity, lostItem.imagePath!);
+              email!, newItem, lostItem, fsimilarity, lostItem.imagePath!);
         }
       }
     } catch (e) {
@@ -59,7 +61,7 @@ class ItemManager implements ItemPoster {
   }
 
   Future<void> sendMatchingItemEmail(String recipientEmail, Item lostItem,
-      Item foundItem, double similarity, String foundItemImagePath) async {
+      Item foundItem, String fsimilarity, String foundItemImagePath) async {
     try {
       final emailSender = EmailSender(
           username: 'theintnandarsu246@gmail.com', password: 'fjpk rgpp nlgq hkct');
@@ -69,7 +71,7 @@ class ItemManager implements ItemPoster {
           'We have found a matching item for your lost item:\n\n'
           'Lost Item: ${lostItem.name}\n'
           'Found Item: ${foundItem.name}\n'
-          'There is a high similarity Score: $similarity between these items\n\n'
+          'There is a high similarity Score: {$fsimilarity} between these items\n\n'
           'We have also attached the image. Please kindly check it\n\n'
           'Please contact us for further details.\n\n'
           'Regards,\n'
