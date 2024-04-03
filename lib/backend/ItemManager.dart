@@ -98,10 +98,10 @@ class ItemManager implements ItemPoster {
     Map<String, String>? result = await dbHelper.getLostItemOwnerDetails(item);
     return result;
   }
-
-  Future<Map<String, String>?> getLostItemOwner(Item item) async {
+  Future<Map<String, String>?> getReceivePerson(Item item) async {
     DbHelper dbHelper = DbHelper();
-    Map<String, String>? result = await dbHelper.getLostItemOwnerDetails(item);
+    Map<String, String>? result =
+        await dbHelper.getNameAndEmailFromFoundItem(item);
     return result;
   }
 }
