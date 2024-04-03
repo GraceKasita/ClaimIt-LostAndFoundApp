@@ -7,10 +7,10 @@ import 'Item.dart';
 import '../backend/DbHelper.dart';
 
 class ItemManager implements ItemPoster {
-  String verificationCode = 'admin1234';
+  String _verificationCode = 'admin1234';
 
   Future<bool> compareVerificationCode(String inputCode) async {
-    return inputCode == verificationCode;
+    return inputCode == _verificationCode;
   }
 
   Future<void> post(Item newItem) async {
@@ -49,8 +49,10 @@ class ItemManager implements ItemPoster {
           int? itemId = await dbHelper.getItemIdByAttributes(lostItem);
           String? email = await dbHelper.getEmailByItemIdFromLostTable(itemId!);
 
+          String fsimilarity ='${(similarity * 100).toStringAsFixed(2)}%';
+
           await sendMatchingItemEmail(
-              email!, newItem, lostItem, similarity, lostItem.imagePath!);
+              email!, newItem, lostItem, fsimilarity, lostItem.imagePath!);
         }
       }
     } catch (e) {
@@ -59,17 +61,17 @@ class ItemManager implements ItemPoster {
   }
 
   Future<void> sendMatchingItemEmail(String recipientEmail, Item lostItem,
-      Item foundItem, double similarity, String foundItemImagePath) async {
+      Item foundItem, String fsimilarity, String foundItemImagePath) async {
     try {
       final emailSender = EmailSender(
-          username: 'gkasita.sst@gmail.com', password: 'aqru szme dkha fpkc');
+          username: 'theintnandarsu246@gmail.com', password: 'fjpk rgpp nlgq hkct');
 
       String subject = 'Matching Item Found! Is this yours?';
       String body = 'Dear User,\n\n'
           'We have found a matching item for your lost item:\n\n'
           'Lost Item: ${lostItem.name}\n'
           'Found Item: ${foundItem.name}\n'
-          'There is a high similarity Score: $similarity between these items\n\n'
+          'There is a high similarity Score: {$fsimilarity} between these items\n\n'
           'We have also attached the image. Please kindly check it\n\n'
           'Please contact us for further details.\n\n'
           'Regards,\n'
@@ -91,11 +93,9 @@ class ItemManager implements ItemPoster {
       print("Error saving: $e");
     }
   }
-
-  Future<Map<String, String>?> getReceivePerson(Item item) async {
+    Future<Map<String, String>?> getLostItemOwner(Item item) async {
     DbHelper dbHelper = DbHelper();
-    Map<String, String>? result =
-        await dbHelper.getNameAndEmailFromFoundItem(item);
+    Map<String, String>? result = await dbHelper.getLostItemOwnerDetails(item);
     return result;
   }
 
@@ -105,3 +105,4 @@ class ItemManager implements ItemPoster {
     return result;
   }
 }
+

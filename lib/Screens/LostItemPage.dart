@@ -157,16 +157,16 @@ class _LostItemPageState extends State<LostItemPage> {
     // Create your search strategies based on selected criteria
     List<SearchStrategy> strategies = [];
 
-    if (selectedCategory != 'none' &&
-        selectedCategory != null &&
-        selectedCategory!.isNotEmpty) {
-      strategies.add(CategoryFilterStrategy(selectedCategory!, 'Lost'));
-    }
-
     if (selectedColor != 'none' &&
         selectedColor != null &&
         selectedColor!.isNotEmpty) {
       strategies.add(ColorFilterStrategy(selectedColor!, 'Lost'));
+    }
+
+    if (selectedCategory != 'none' &&
+        selectedCategory != null &&
+        selectedCategory!.isNotEmpty) {
+      strategies.add(CategoryFilterStrategy(selectedCategory!, 'Lost'));
     }
 
     if (selectedLocation != 'none' &&

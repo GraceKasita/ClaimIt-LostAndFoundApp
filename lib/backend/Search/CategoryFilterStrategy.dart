@@ -6,13 +6,13 @@ class CategoryFilterStrategy implements SearchStrategy {
   final String category;
   final String itemType;
   final List<Item>? itemsToFilter;
-  final DbHelper dbHelper = DbHelper();
+  final DbHelper _dbHelper = DbHelper();
 
   CategoryFilterStrategy(this.category, this.itemType, {this.itemsToFilter});
 
   @override
   Future<List<Item>> filterItems() async {
-    return dbHelper.getItemsByCategory(category, itemType);
+    return _dbHelper.getItemsByCategory(category, itemType);
   }
 
   Future<List<Item>> filterItemsFromList(List<Item> items) async {
@@ -25,3 +25,4 @@ class CategoryFilterStrategy implements SearchStrategy {
     return filteredItems;
   }
 }
+

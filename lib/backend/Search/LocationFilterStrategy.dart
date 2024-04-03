@@ -6,13 +6,13 @@ class LocationFilterStrategy implements SearchStrategy {
   final String location;
   final String itemType;
   final List<Item>? itemsToFilter;
-  final DbHelper dbHelper = DbHelper();
+  final DbHelper _dbHelper = DbHelper();
 
   LocationFilterStrategy(this.location, this.itemType, {this.itemsToFilter});
 
   @override
   Future<List<Item>> filterItems() async {
-    return dbHelper.getItemsByLocation(location, itemType);
+    return _dbHelper.getItemsByLocation(location, itemType);
   }
 
   Future<List<Item>> filterItemsFromList(List<Item> items) async {

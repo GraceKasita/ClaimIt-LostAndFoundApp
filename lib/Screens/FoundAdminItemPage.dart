@@ -164,16 +164,16 @@ class _FoundItemPageState extends State<FoundAdminItemPage> {
     // Create your search strategies based on selected criteria
     List<SearchStrategy> strategies = [];
 
-    if (selectedCategory != 'none' &&
-        selectedCategory != null &&
-        selectedCategory!.isNotEmpty) {
-      strategies.add(CategoryFilterStrategy(selectedCategory!, 'Found'));
-    }
-
     if (selectedColor != 'none' &&
         selectedColor != null &&
         selectedColor!.isNotEmpty) {
       strategies.add(ColorFilterStrategy(selectedColor!, 'Found'));
+    }
+
+    if (selectedCategory != 'none' &&
+        selectedCategory != null &&
+        selectedCategory!.isNotEmpty) {
+      strategies.add(CategoryFilterStrategy(selectedCategory!, 'Found'));
     }
 
     if (selectedLocation != 'none' &&

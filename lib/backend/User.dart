@@ -58,8 +58,9 @@ class User implements ItemPoster {
 
         if (similarity >= 0.7) {
           print('Found a similar item: ${foundItem.name}');
+          String fsimilarity ='${(similarity * 100).toStringAsFixed(2)}%';
           await sendMatchingItemEmail(userdetail.getEmail()!, newItem,
-              foundItem, similarity, foundItem.imagePath!);
+              foundItem, fsimilarity, foundItem.imagePath!);
         }
       }
     } catch (e) {
@@ -103,7 +104,7 @@ class User implements ItemPoster {
   UserModel get getUserDetail => userdetail;
 
   Future<void> sendMatchingItemEmail(String recipientEmail, Item lostItem,
-      Item foundItem, double similarity, String foundItemImagePath) async {
+      Item foundItem, String fsimilarity, String foundItemImagePath) async {
     try {
       final emailSender = EmailSender(
           username: 'gkasita.sst@gmail.com', password: 'aqru szme dkha fpkc');
@@ -113,7 +114,7 @@ class User implements ItemPoster {
           'We have found a matching item for your lost item:\n\n'
           'Lost Item: ${lostItem.name}\n'
           'Found Item: ${foundItem.name}\n'
-          'There is a high similarity Score: $similarity between these items\n\n'
+          'There is a high similarity Score: {$fsimilarity} between these items\n\n'
           'We have also attached the image. Please kindly check it\n\n'
           'Please contact us for further details.\n\n'
           'Regards,\n'

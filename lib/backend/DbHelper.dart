@@ -107,7 +107,7 @@ class DbHelper {
 
     return null;
   }
-
+  /*
   //user retreive by email
   Future<UserModel?> getUserByEmail(String email) async {
     var dbClient = await db;
@@ -122,7 +122,7 @@ class DbHelper {
     }
 
     return null;
-  }
+  } */
 
   //item table -> save
   Future<int> saveItem(Item item) async {
@@ -218,6 +218,7 @@ class DbHelper {
     return res;
   }
 
+/*
 // Delete found item
   Future<int> deleteFoundItem(int itemId) async {
     var dbClient = await db;
@@ -238,7 +239,7 @@ class DbHelper {
       where: 'id = ? AND item_type = ?',
       whereArgs: [itemId, oldItemType],
     );
-  }
+  } */
 
   Future<List<Item>> getItemsByColor(String color, String itemType) async {
     var dbClient = await db;
