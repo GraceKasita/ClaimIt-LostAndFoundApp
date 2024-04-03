@@ -242,10 +242,15 @@ class DbHelper {
 
   Future<List<Item>> getItemsByColor(String color, String itemType) async {
     var dbClient = await db;
+
+    // Adjust the color pattern to search for the specified color
+    String whereClause = "color LIKE ? AND item_type = ?";
+    List<dynamic> whereArgs = ['%$color%', itemType];
+
     List<Map<String, dynamic>> res = await dbClient!.query(
       Table_Item,
-      where: 'color = ? AND item_type = ?',
-      whereArgs: [color, itemType],
+      where: whereClause,
+      whereArgs: whereArgs,
     );
 
     List<Item> items = [];
@@ -523,5 +528,39 @@ class DbHelper {
     }
 
     return null; // Return null if the item is not found in the item_table or if no corresponding entry is found in the foundItem_table
+  }
+
+  Future<Map<String, String>?> getLostItemOwnerDetails(Item item) async {
+    var dbClient = await db;
+
+    // Retrieve the item ID based on its attributes
+    int? itemId = await getItemIdByAttributes(item);
+
+    if (itemId != null) {
+      // Search for the item ID in the lostItem_table to get the associated email
+      List<Map<String, dynamic>> lostItemRecords = await dbClient!.query(
+        Table_LostItem,
+        where: 'item_id = ?',
+        whereArgs: [itemId],
+      );
+
+      if (lostItemRecords.isNotEmpty) {
+        String email = lostItemRecords.first['email'];
+
+        List<Map<String, dynamic>> userRecords = await dbClient.query(
+          Table_User,
+          where: 'email = ?',
+          whereArgs: [email],
+        );
+
+        if (userRecords.isNotEmpty) {
+          String username = userRecords.first['user_name'];
+
+          return {'username': username, 'email': email};
+        }
+      }
+    }
+
+    return null;
   }
 }

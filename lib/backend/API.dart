@@ -14,7 +14,7 @@ class APIService {
 
   Future<String> getSimilarityScore(
       String image1Path, String image2Path) async {
-    var uri = Uri.parse("http://192.168.232.248:8000/get_similarity_score");
+    var uri = Uri.parse("http://192.168.193.248:8000/get_similarity_score");
     var request = http.MultipartRequest("POST", uri);
 
     var image1File = await http.MultipartFile.fromPath('image1', image1Path);
@@ -30,7 +30,7 @@ class APIService {
   }
 
   Future<String> getDetected(String image1Path) async {
-    var uri = Uri.parse("http://192.168.232.248:8000/get_detected");
+    var uri = Uri.parse("http://192.168.193.248:8000/get_detected");
     var request = http.MultipartRequest("POST", uri);
 
     var image1File = await http.MultipartFile.fromPath('image', image1Path);

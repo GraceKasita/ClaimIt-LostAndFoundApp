@@ -12,31 +12,24 @@ import '../ui_helper/genTextFormField.dart';
 
 class UploadForm extends StatefulWidget {
   final ItemPoster itemPoster;
-  UploadForm({super.key, required this.itemPoster});
+  UploadForm({Key? key, required this.itemPoster}) : super(key: key);
   @override
   _UploadFormState createState() => _UploadFormState();
 }
 
 class _UploadFormState extends State<UploadForm> {
-  String? selectedColor;
+  List<String> selectedColors = [];
   String? selectedCategory;
   String? selectedLocation;
   String name = '';
   String description = '';
 
   final _conName = TextEditingController();
-  final _conColor = TextEditingController();
   final _conLocation = TextEditingController();
   final _conCategory = TextEditingController();
   final _conDescription = TextEditingController();
 
   File? _selectedImage;
-
-  void updateTextField(String newText) {
-    setState(() {
-      _conName.text = newText;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -98,6 +91,28 @@ class _UploadFormState extends State<UploadForm> {
                 ],
               ),
               SizedBox(height: 16),
+              Row(
+                children: [
+                  Icon(
+                    Icons.color_lens,
+                    color: Colors.black54,
+                  ),
+                  SizedBox(width: 8),
+                  Text(
+                    'Color',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ],
+              ),
+              SizedBox(height: 8),
+              Container(
+                height: 50,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: getColorCheckboxes(),
+                ),
+              ),
+              SizedBox(height: 16),
               getTextFormField(
                 controller: _conName,
                 hintName: 'Name',
@@ -120,31 +135,6 @@ class _UploadFormState extends State<UploadForm> {
                   });
                 },
                 value: selectedCategory,
-              ),
-              SizedBox(height: 8),
-              getDropdownFormField(
-                hintName: 'Color',
-                items: [
-                  'Red',
-                  'Green',
-                  'Blue',
-                  'Yellow',
-                  'Orange',
-                  'Purple',
-                  'Pink',
-                  'Brown',
-                  'Black',
-                  'White',
-                  'Gray',
-                  'Other'
-                ],
-                icon: Icons.color_lens,
-                onChanged: (value) {
-                  setState(() {
-                    selectedColor = value;
-                  });
-                },
-                value: selectedColor,
               ),
               SizedBox(height: 8),
               getDropdownFormField(
@@ -173,6 +163,7 @@ class _UploadFormState extends State<UploadForm> {
                 hintName: 'Description',
                 icon: Icons.description,
               ),
+              SizedBox(height: 16),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -197,13 +188,48 @@ class _UploadFormState extends State<UploadForm> {
     );
   }
 
+  List<Widget> getColorCheckboxes() {
+    return [
+      for (var color in [
+        'Red',
+        'Green',
+        'Blue',
+        'Yellow',
+        'Orange',
+        'Purple',
+        'Pink',
+        'Brown',
+        'Black',
+        'White',
+        'Gray',
+        'Other'
+      ])
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4.0),
+          child: FilterChip(
+            label: Text(color),
+            selected: selectedColors.contains(color),
+            onSelected: (bool selected) {
+              setState(() {
+                if (selected) {
+                  selectedColors.add(color);
+                } else {
+                  selectedColors.remove(color);
+                }
+              });
+            },
+          ),
+        ),
+    ];
+  }
+
   Future<void> _uploadItem() async {
     if (_selectedImage == null ||
         selectedCategory == null ||
-        selectedColor == null ||
         selectedLocation == null ||
         _conName.text.isEmpty ||
-        _conDescription.text.isEmpty) {
+        _conDescription.text.isEmpty ||
+        selectedColors.isEmpty) {
       // Display an error message or alert the user about missing information
       return;
     }
@@ -213,7 +239,7 @@ class _UploadFormState extends State<UploadForm> {
     Item item = Item(
       name: _conName.text,
       category: selectedCategory,
-      color: selectedColor,
+      color: selectedColors.join(', '), // Joining selected colors into a string
       location: selectedLocation,
       description: _conDescription.text,
       imagePath: _selectedImage!.path,
@@ -267,7 +293,7 @@ class _UploadFormState extends State<UploadForm> {
             0, cleanedDetectedObject.length - 1);
 
         print('Detected Object: $cleanedDetectedObject');
-        updateTextField(cleanedDetectedObject);
+        _conName.text = cleanedDetectedObject; // Update name field
       } else {
         print('No image selected.');
       }
@@ -294,7 +320,7 @@ class _UploadFormState extends State<UploadForm> {
             0, cleanedDetectedObject.length - 1);
 
         print('Detected Object: $cleanedDetectedObject');
-        updateTextField(cleanedDetectedObject);
+        _conName.text = cleanedDetectedObject; // Update name field
       } else {
         print('No image selected from camera.');
       }
