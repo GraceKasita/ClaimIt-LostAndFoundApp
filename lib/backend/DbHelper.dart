@@ -20,7 +20,7 @@ class DbHelper {
   //addition attr: itemId, user [itemid, email]
   static const String Table_LostItem = 'lostItem_table';
   //addition attr: itemId, receivedBy [item3, john]
-  static const String Table_FoundItem = 'foundItem_table';
+  static const String Table_ReceivedItem = 'receivedItem_table';
 
   static const int Version = 1;
 
@@ -78,7 +78,7 @@ class DbHelper {
         "FOREIGN KEY (email) REFERENCES $Table_User($C_Email), "
         "UNIQUE (item_id, email)"
         ")");
-    await db.execute("CREATE TABLE $Table_FoundItem ("
+    await db.execute("CREATE TABLE $Table_ReceivedItem ("
         "item_id INTEGER, "
         "name TEXT, "
         "email TEXT, "
@@ -200,19 +200,21 @@ class DbHelper {
   }
 
   // Found Item table -> save
+  /*
   Future<int> saveFoundItem(int itemId, String name, String email) async {
     var dbClient = await db;
     int res = await dbClient!.rawInsert(
-      'INSERT INTO $Table_FoundItem (item_id, name, email) VALUES (?, ?, ?)',
+      'INSERT INTO $Table_ReceivedItem (item_id, name, email) VALUES (?, ?, ?)',
       [itemId, name, email],
     );
     return res;
   }
+  */
 
   Future<int> saveReceiveItem(int itemId, String name, String email) async {
     var dbClient = await db;
     int res = await dbClient!.rawInsert(
-      'INSERT INTO $Table_FoundItem (item_id, name, email) VALUES (?, ?, ?)',
+      'INSERT INTO $Table_ReceivedItem (item_id, name, email) VALUES (?, ?, ?)',
       [itemId, name, email],
     );
     return res;
@@ -295,6 +297,8 @@ class DbHelper {
     return items;
   }
 
+//delete
+/* 
   Future<List<Item>> getItemsByCategoryAndType(
       String category, String itemType) async {
     var dbClient = await db;
@@ -310,6 +314,7 @@ class DbHelper {
     }
     return items;
   }
+  */
 
   // Method to get all found items
   Future<List<Item>> getAllFoundItems() async {
@@ -514,7 +519,7 @@ class DbHelper {
 
       // Search for corresponding entries in the foundItem_table using the item ID
       List<Map<String, dynamic>> foundItems = await dbClient.query(
-        Table_FoundItem,
+        Table_ReceivedItem,
         where: 'item_id = ?',
         whereArgs: [itemId],
       );

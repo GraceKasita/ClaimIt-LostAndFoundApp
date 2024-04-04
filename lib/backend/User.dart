@@ -41,7 +41,7 @@ class User implements ItemPoster {
       DbHelper dbHelper = DbHelper();
 
       List<Item> foundItems =
-          await dbHelper.getItemsByCategoryAndType(newItem.category!, 'Found');
+          await dbHelper.getItemsByCategory(newItem.category!, 'Found');
 
       for (Item foundItem in foundItems) {
         String similarityString = await APIService.instance.getSimilarityScore(
@@ -58,7 +58,7 @@ class User implements ItemPoster {
 
         if (similarity >= 0.7) {
           print('Found a similar item: ${foundItem.name}');
-          String fsimilarity ='${(similarity * 100).toStringAsFixed(2)}%';
+          String fsimilarity = '${(similarity * 100).toStringAsFixed(2)}%';
           await sendMatchingItemEmail(userdetail.getEmail()!, newItem,
               foundItem, fsimilarity, foundItem.imagePath!);
         }
@@ -79,6 +79,7 @@ class User implements ItemPoster {
   //   // Print other attributes as needed
   // }
 
+//not use
   Future<void> delete_Item(int itemId) async {
     try {
       DbHelper dbHelper = DbHelper();
@@ -107,7 +108,7 @@ class User implements ItemPoster {
       Item foundItem, String fsimilarity, String foundItemImagePath) async {
     try {
       final emailSender = EmailSender(
-          username: 'gkasita.sst@gmail.com', password: 'aqru szme dkha fpkc');
+          username: 'gkasita.sst@gmail.com', password: 'ihxy kbao jwvv yefo');
 
       String subject = 'Matching Item Found! Is this yours?';
       String body = 'Dear User,\n\n'

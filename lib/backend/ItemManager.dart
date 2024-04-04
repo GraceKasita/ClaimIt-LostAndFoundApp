@@ -29,7 +29,7 @@ class ItemManager implements ItemPoster {
       DbHelper dbHelper = DbHelper();
 
       List<Item> LostItems =
-          await dbHelper.getItemsByCategoryAndType(newItem.category!, 'Lost');
+          await dbHelper.getItemsByCategory(newItem.category!, 'Lost');
 
       for (Item lostItem in LostItems) {
         String similarityString = await APIService.instance.getSimilarityScore(
@@ -49,7 +49,7 @@ class ItemManager implements ItemPoster {
           int? itemId = await dbHelper.getItemIdByAttributes(lostItem);
           String? email = await dbHelper.getEmailByItemIdFromLostTable(itemId!);
 
-          String fsimilarity ='${(similarity * 100).toStringAsFixed(2)}%';
+          String fsimilarity = '${(similarity * 100).toStringAsFixed(2)}%';
 
           await sendMatchingItemEmail(
               email!, newItem, lostItem, fsimilarity, lostItem.imagePath!);
@@ -64,7 +64,7 @@ class ItemManager implements ItemPoster {
       Item foundItem, String fsimilarity, String foundItemImagePath) async {
     try {
       final emailSender = EmailSender(
-          username: 'theintnandarsu246@gmail.com', password: 'fjpk rgpp nlgq hkct');
+          username: 'gkasita.sst@gmail.com', password: 'ihxy kbao jwvv yefo');
 
       String subject = 'Matching Item Found! Is this yours?';
       String body = 'Dear User,\n\n'
@@ -93,16 +93,17 @@ class ItemManager implements ItemPoster {
       print("Error saving: $e");
     }
   }
-    Future<Map<String, String>?> getLostItemOwner(Item item) async {
-    DbHelper dbHelper = DbHelper();
-    Map<String, String>? result = await dbHelper.getLostItemOwnerDetails(item);
-    return result;
-  }
 
   Future<Map<String, String>?> getLostItemOwner(Item item) async {
     DbHelper dbHelper = DbHelper();
     Map<String, String>? result = await dbHelper.getLostItemOwnerDetails(item);
     return result;
   }
-}
 
+  Future<Map<String, String>?> getReceivePerson(Item item) async {
+    DbHelper dbHelper = DbHelper();
+    Map<String, String>? result =
+        await dbHelper.getNameAndEmailFromFoundItem(item);
+    return result;
+  }
+}
